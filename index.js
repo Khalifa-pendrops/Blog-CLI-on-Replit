@@ -26,6 +26,30 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+const userOptions = (option) => {
+  switch (option) {
+    case "1":
+      createBlogPost();
+      break;
+    case "2":
+      viewBlogPost();
+      break;
+    case "3":
+      editBlogPost();
+      break;
+    case "4":
+      deleteBlogPost();
+      break;
+    case "5":
+      console.log("\nAlert 🔊: Exiting Blog Menu now...");
+      rl.close();
+      break;
+    default:
+      console.log("\nUnknown option. Please try again.");
+      blogMenu();
+  }
+};
+
 const blogMenu = () => {
   console.log(`
         My Blog CLI
@@ -46,7 +70,8 @@ const blogMenu = () => {
 const createBlogPost = () => {
   rl.question("Enter a title for your Post: ", (title) => {
     rl.question("Enter the content of your Post: ", (content) => {
-      blogPosts.push({ title, content });
+      const createdAt = new Date().toLocaleString();
+      blogPosts.push({ title, content, createdAt });
       saveMyPosts(blogPosts);
       console.log("\nAlert 🔊: New post added!");
       blogMenu();
@@ -62,10 +87,11 @@ const viewBlogPost = () => {
       "\nAlert 🔊: Ooops! Seems like there is no Blog Post at the moment. Please create a Post.",
     );
   } else {
-    blogPosts.forEach(({ title, content }, index) => {
+    blogPosts.forEach(({ title, content, createdAt }, index) => {
       console.log(`\nPost #${index + 1}`);
       console.log(`Title: ${title}`);
       console.log(`Content: ${content}`);
+      console.log(`Created At: ${createdAt}`);
     });
   }
   blogMenu();
@@ -103,6 +129,7 @@ const editBlogPost = () => {
               "Please enter new content (leave blank if you want to keep the current content): ",
               (newContent) => {
                 blogPosts[index] = {
+                  ...post,
                   title: newTitle || post.title,
                   content: newContent || post.content,
                 };
@@ -147,30 +174,6 @@ const deleteBlogPost = () => {
     }
     blogMenu();
   });
-};
-
-const userOptions = (option) => {
-  switch (option) {
-    case "1":
-      createBlogPost();
-      break;
-    case "2":
-      viewBlogPost();
-      break;
-    case "3":
-      editBlogPost();
-      break;
-    case "4":
-      deleteBlogPost();
-      break;
-    case "5":
-      console.log("\nAlert 🔊: Exiting Blog Menu now...");
-      rl.close();
-      break;
-    default:
-      console.log("\nUnknown option. Please try again.");
-      blogMenu();
-  }
 };
 
 blogMenu();
